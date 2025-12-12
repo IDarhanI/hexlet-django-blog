@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hexlet_django_blog',
+    'hexlet_django_blog.article',
 ]
 
 MIDDLEWARE = [
