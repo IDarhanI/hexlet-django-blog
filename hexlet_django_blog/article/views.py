@@ -1,11 +1,17 @@
+from django.views import View
 from django.shortcuts import render
 
 
-def index(request):
-    # Создаем контекст с данными для шаблона
-    context = {
-        'app_name': 'Articles',  # Название приложения для шаблона
-    }
+class ArticleIndexView(View):
+    def get(self, request, *args, **kwargs):
+        context = {
+            'app_name': 'Articles',
+        }
+        return render(request, 'articles/index.html', context)
     
-    # Используем шаблон из директории templates/articles
+def index(request, tags, article_id):
+    context = {
+        'tags': tags,
+        'article_id': article_id,
+    }
     return render(request, 'articles/index.html', context)
