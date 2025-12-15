@@ -33,9 +33,10 @@
         
         <div class="form-group">
             <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
-            {{ form.name }}
+            <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" 
+                   class="form-control" placeholder="Введите название статьи">
             {% if form.name.errors %}
-                <div class="text-danger">
+                <div style="color: red; margin-top: 5px;">
                     {% for error in form.name.errors %}
                         {{ error }}
                     {% endfor %}
@@ -45,9 +46,10 @@
         
         <div class="form-group">
             <label for="{{ form.body.id_for_label }}">{{ form.body.label }}</label>
-            {{ form.body }}
+            <textarea name="{{ form.body.name }}" id="{{ form.body.id_for_label }}" 
+                      rows="10" class="form-control" placeholder="Введите содержание статьи..."></textarea>
             {% if form.body.errors %}
-                <div class="text-danger">
+                <div style="color: red; margin-top: 5px;">
                     {% for error in form.body.errors %}
                         {{ error }}
                     {% endfor %}
@@ -55,7 +57,9 @@
             {% endif %}
         </div>
         
-        <button type="submit" class="btn btn-primary">Создать статью</button>
-        <a href="{% url 'article:index' %}" class="btn btn-secondary">Назад к статьям</a>
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-success">Создать статью</button>
+            <a href="{% url 'article:index' %}" class="btn btn-secondary">Отмена</a>
+        </div>
     </form>
 {% endblock %}

@@ -3,7 +3,12 @@
 {% block title %}{{ article.name }} - Django на Хекслете{% endblock %}
 
 {% block content %}
-    <h1>{{ article.name }}</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="margin: 0;">{{ article.name }}</h1>
+        <a href="{% url 'article:update' id=article.id %}" style="padding: 8px 16px; background-color: #ffc107; color: #333; text-decoration: none; border-radius: 4px;">
+            Редактировать статью
+        </a>
+    </div>
     
     <!-- Сообщения Django -->
     {% if messages %}
@@ -14,15 +19,15 @@
         {% endfor %}
     {% endif %}
     
-    <div class="article-content">
+    <div class="article-content" style="margin-bottom: 20px;">
         {{ article.body|linebreaks }}
     </div>
     
-    <div class="article-meta">
+    <div class="article-meta" style="margin-bottom: 30px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
         <small>
-            Создано: {{ article.created_at|date:"d.m.Y H:i" }}
-            {% if article.updated_at %}
-                | Обновлено: {{ article.updated_at|date:"d.m.Y H:i" }}
+            <strong>Создано:</strong> {{ article.created_at|date:"d.m.Y H:i" }}
+            {% if article.created_at != article.updated_at %}
+                | <strong>Обновлено:</strong> {{ article.updated_at|date:"d.m.Y H:i" }}
             {% endif %}
         </small>
     </div>
@@ -54,7 +59,9 @@
         {% csrf_token %}
         
         <div class="form-group" style="margin-bottom: 15px;">
-            <label for="id_content">{{ comment_form.content.label }}</label>
+            <label for="id_content" style="display: block; margin-bottom: 5px; font-weight: bold;">
+                Ваш комментарий:
+            </label>
             <textarea name="content" id="id_content" rows="3" 
                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
                       placeholder="Введите ваш комментарий здесь...">{{ comment_form.content.value|default:'' }}</textarea>
@@ -68,20 +75,13 @@
             {% endif %}
         </div>
         
-        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            Отправить комментарий
-        </button>
-        <a href="{% url 'article:index' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">
-            Назад к статьям
-        </a>
-    </form>
-    
-    <!-- Отображение ошибок формы -->
-    {% if comment_form.non_field_errors %}
-        <div style="color: red; margin-top: 10px;">
-            {% for error in comment_form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Отправить комментарий
+            </button>
+            <a href="{% url 'article:index' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+                Назад к статьям
+            </a>
         </div>
-    {% endif %}
+    </form>
 {% endblock %}

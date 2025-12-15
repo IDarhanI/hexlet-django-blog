@@ -20,14 +20,14 @@ class IndexView(View):
 class ArticleView(View):
     def get(self, request, *args, **kwargs):
         article = get_object_or_404(Article, id=kwargs["id"])
-        comment_form = ArticleCommentForm()  # Пустая форма для GET запроса
+        comment_form = ArticleCommentForm()
         
         return render(
             request,
             "articles/show.html",
             context={
                 "article": article,
-                "comment_form": comment_form,  # Убедитесь, что передаем форму
+                "comment_form": comment_form,
             },
         )
     
@@ -46,13 +46,16 @@ class ArticleView(View):
             )
             return redirect('article:show', id=article.id)
         else:
-            # Если форма не валидна, показываем снова с ошибками
+            messages.error(
+                request, 
+                'Пожалуйста, исправьте ошибки в форме комментария'
+            )
             return render(
                 request,
                 "articles/show.html",
                 context={
                     "article": article,
-                    "comment_form": comment_form,  # Форма с ошибками
+                    "comment_form": comment_form,
                 },
             )
 
@@ -85,3 +88,38 @@ class ArticleFormCreateView(View):
             'Пожалуйста, исправьте ошибки в форме'
         )
         return render(request, 'articles/create.html', {'form': form})
+
+
+class ArticleFormEditView(View):
+    def get(self, request, *args, **kwargs):
+        article_id = kwargs.get("id")
+        article = get_object_or_404(Article, id=article_id)
+        form = ArticleForm(instance=article)
+        return render(
+            request, 
+            "articles/update.html", 
+            {"form": form, "article_id": article_id}
+        )
+    
+    def post(self, request, *args, **kwargs):
+        article_id = kwargs.get("id")
+        article = get_object_or_404(Article, id=article_id)
+        form = ArticleForm(request.POST, instance=article)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, 
+                f'Статья "{article.name}" успешно обновлена!'
+            )
+            return redirect('article:show', id=article_id)
+        
+        messages.error(
+            request, 
+            'Пожалуйста, исправьте ошибки в форме'
+        )
+        return render(
+            request, 
+            "articles/update.html", 
+            {"form": form, "article_id": article_id}
+        )

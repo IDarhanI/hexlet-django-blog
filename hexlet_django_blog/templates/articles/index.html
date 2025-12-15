@@ -14,32 +14,45 @@
         {% endfor %}
     {% endif %}
     
-    <a href="{% url 'article:create' %}" class="btn btn-primary mb-3">
+    <a href="{% url 'article:create' %}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; margin-bottom: 20px; display: inline-block;">
         Создать новую статью
     </a>
     
     {% if articles %}
-        <ul>
+        <ul style="list-style-type: none; padding: 0;">
             {% for article in articles %}
-                <li style="margin-bottom: 15px;">
-                    <h4>
-                        <a href="{% url 'article:show' id=article.id %}">
+                <li style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                    <h3 style="margin-top: 0;">
+                        <a href="{% url 'article:show' id=article.id %}" style="color: #007bff; text-decoration: none;">
                             {{ article.name }}
                         </a>
-                    </h4>
-                    <small>
-                        Создано: {{ article.created_at|date:"d.m.Y H:i" }}
-                        {% if article.updated_at %}
-                            | Обновлено: {{ article.updated_at|date:"d.m.Y H:i" }}
-                        {% endif %}
-                    </small>
+                    </h3>
+                    
                     <p>{{ article.body|truncatewords:30 }}</p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <small style="color: #666;">
+                            Создано: {{ article.created_at|date:"d.m.Y H:i" }}
+                            {% if article.updated_at %}
+                                | Обновлено: {{ article.updated_at|date:"d.m.Y H:i" }}
+                            {% endif %}
+                        </small>
+                        
+                        <div>
+                            <a href="{% url 'article:update' id=article.id %}" style="padding: 5px 10px; background-color: #ffc107; color: #333; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+                                Редактировать
+                            </a>
+                            <a href="{% url 'article:show' id=article.id %}" style="padding: 5px 10px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 4px;">
+                                Читать
+                            </a>
+                        </div>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <div class="alert alert-info">
-            Статей пока нет. <a href="{% url 'article:create' %}">Создайте первую статью!</a>
+        <div style="padding: 20px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 5px;">
+            <p>Статей пока нет. <a href="{% url 'article:create' %}">Создайте первую статью!</a></p>
         </div>
     {% endif %}
 {% endblock %}

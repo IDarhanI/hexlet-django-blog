@@ -3,7 +3,8 @@ from hexlet_django_blog.article.views import (
     IndexView, 
     ArticleView, 
     article_with_tags,
-    ArticleFormCreateView
+    ArticleFormCreateView,
+    ArticleFormEditView
 )
 
 app_name = 'article'
@@ -11,6 +12,7 @@ app_name = 'article'
 urlpatterns = [
     path("<slug:tags>/<int:article_id>/", article_with_tags, name='article_with_tags'),
     path("", IndexView.as_view(), name='index'),
+    path("<int:id>/edit/", ArticleFormEditView.as_view(), name='update'),  # ДОЛЖЕН БЫТЬ ПЕРЕД show!
     path("<int:id>/", ArticleView.as_view(), name='show'),
     path("create/", ArticleFormCreateView.as_view(), name="create"),
 ]
