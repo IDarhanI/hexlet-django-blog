@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Создать статью - Django на Хекслете{% endblock %}
+
+{% block content %}
+    <h1>Создать новую статью</h1>
+    
+    <!-- Сообщения Django -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Вывод ошибок формы -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Пожалуйста, исправьте следующие ошибки:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <form action="{% url 'article:create' %}" method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="text-danger">
+                    {% for error in form.name.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.body.id_for_label }}">{{ form.body.label }}</label>
+            {{ form.body }}
+            {% if form.body.errors %}
+                <div class="text-danger">
+                    {% for error in form.body.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Создать статью</button>
+        <a href="{% url 'article:index' %}" class="btn btn-secondary">Назад к статьям</a>
+    </form>
+{% endblock %}

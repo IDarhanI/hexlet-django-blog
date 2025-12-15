@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.name }} - Django на Хекслете{% endblock %}
+
+{% block content %}
+    <h1>{{ article.name }}</h1>
+    
+    <!-- Сообщения Django -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="article-content">
+        {{ article.body|linebreaks }}
+    </div>
+    
+    <div class="article-meta">
+        <small>
+            Создано: {{ article.created_at|date:"d.m.Y H:i" }}
+            {% if article.updated_at %}
+                | Обновлено: {{ article.updated_at|date:"d.m.Y H:i" }}
+            {% endif %}
+        </small>
+    </div>
+    
+    <hr>
+    
+    <h3>Комментарии ({{ article.comments.count }})</h3>
+    
+    <!-- Список комментариев -->
+    {% if article.comments.all %}
+        {% for comment in article.comments.all %}
+            <div class="comment" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <p>{{ comment.content }}</p>
+                <small style="color: #666;">
+                    Добавлен: {{ comment.created_at|date:"d.m.Y H:i" }}
+                </small>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Пока нет комментариев.</p>
+    {% endif %}
+    
+    <hr>
+    
+    <!-- Форма для добавления комментария -->
+    <h4>Добавить комментарий</h4>
+    
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="id_content">{{ comment_form.content.label }}</label>
+            <textarea name="content" id="id_content" rows="3" 
+                      style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                      placeholder="Введите ваш комментарий здесь...">{{ comment_form.content.value|default:'' }}</textarea>
+            
+            {% if comment_form.content.errors %}
+                <div style="color: red; margin-top: 5px;">
+                    {% for error in comment_form.content.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Отправить комментарий
+        </button>
+        <a href="{% url 'article:index' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">
+            Назад к статьям
+        </a>
+    </form>
+    
+    <!-- Отображение ошибок формы -->
+    {% if comment_form.non_field_errors %}
+        <div style="color: red; margin-top: 10px;">
+            {% for error in comment_form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

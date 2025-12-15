@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Статьи - Django на Хекслете{% endblock %}
+
+{% block content %}
+    <h1>Статьи</h1>
+    
+    <!-- Сообщения Django -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <a href="{% url 'article:create' %}" class="btn btn-primary mb-3">
+        Создать новую статью
+    </a>
+    
+    {% if articles %}
+        <ul>
+            {% for article in articles %}
+                <li style="margin-bottom: 15px;">
+                    <h4>
+                        <a href="{% url 'article:show' id=article.id %}">
+                            {{ article.name }}
+                        </a>
+                    </h4>
+                    <small>
+                        Создано: {{ article.created_at|date:"d.m.Y H:i" }}
+                        {% if article.updated_at %}
+                            | Обновлено: {{ article.updated_at|date:"d.m.Y H:i" }}
+                        {% endif %}
+                    </small>
+                    <p>{{ article.body|truncatewords:30 }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info">
+            Статей пока нет. <a href="{% url 'article:create' %}">Создайте первую статью!</a>
+        </div>
+    {% endif %}
+{% endblock %}
