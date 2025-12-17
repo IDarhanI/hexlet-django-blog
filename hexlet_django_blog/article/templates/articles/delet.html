@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Удалить статью - Django на Хекслете{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Внимание!</h4>
+        <p>Вы собираетесь удалить статью. Это действие невозможно отменить.</p>
+        <hr>
+        <p class="mb-0">Все комментарии к этой статье также будут удалены.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3>Подтверждение удаления</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ article.name }}</h5>
+            <p class="card-text">{{ article.body|truncatewords:50 }}</p>
+            
+            <div class="article-info">
+                <small class="text-muted">
+                    <strong>Создано:</strong> {{ article.created_at|date:"d.m.Y H:i" }}
+                    {% if article.created_at != article.updated_at %}
+                        | <strong>Обновлено:</strong> {{ article.updated_at|date:"d.m.Y H:i" }}
+                    {% endif %}
+                </small>
+                <br>
+                <small class="text-muted">
+                    <strong>Комментариев:</strong> {{ article.comments.count }}
+                </small>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form method="post">
+                {% csrf_token %}
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Да, удалить статью
+                    </button>
+                    <a href="{% url 'article:show' id=article.id %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Отмена
+                    </a>
+                    <a href="{% url 'article:index' %}" class="btn btn-info">
+                        <i class="fas fa-list"></i> Назад к списку
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-group .btn {
+            flex: 1;
+        }
+        .card {
+            margin-top: 20px;
+            border: 1px solid rgba(0,0,0,.125);
+            border-radius: 0.25rem;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 0.75rem 1.25rem;
+        }
+        .card-body {
+            padding: 1.25rem;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid rgba(0,0,0,.125);
+            padding: 0.75rem 1.25rem;
+        }
+    </style>
+{% endblock %}

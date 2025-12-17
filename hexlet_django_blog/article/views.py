@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic.edit import DeleteView
 from hexlet_django_blog.article.models import Article
 from hexlet_django_blog.article.forms import ArticleCommentForm, ArticleForm
 
@@ -123,3 +125,35 @@ class ArticleFormEditView(View):
             "articles/update.html", 
             {"form": form, "article_id": article_id}
         )
+
+
+class ArticleDeleteView(View):
+    def get(self, request, *args, **kwargs):
+        article_id = kwargs.get("id")
+        article = get_object_or_404(Article, id=article_id)
+        return render(
+            request,
+            "articles/delete.html",
+            {"article": article}
+        )
+    
+    def post(self, request, *args, **kwargs):
+        article_id = kwargs.get("id")
+        article = get_object_or_404(Article, id=article_id)
+        article_name = article.name
+        
+        try:
+            # Удаляем статью
+            article.delete()
+            messages.success(
+                request, 
+                f'Статья "{article_name}" успешно удалена!'
+            )
+        except Exception as e:
+            messages.error(
+                request, 
+                f'Произошла ошибка при удалении статьи: {str(e)}'
+            )
+            return redirect('article:show', id=article_id)
+        
+        return redirect('article:index')
